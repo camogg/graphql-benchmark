@@ -83,6 +83,7 @@ function App() {
 										onChange={(e) =>
 											setConfig({ ...config, executionType: e.target.value })
 										}
+										row
 									>
 										<FormControlLabel
 											value="sequential"
