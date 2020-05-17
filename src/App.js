@@ -41,12 +41,24 @@ function App() {
 		executionType: "sequential",
 	});
 	const [status, setStatuts] = useState("waiting");
+	const [graphTime, setGraphTime] = useState(0);
+	const [restTime, setRestTime] = useState(0);
+	const [graphSize, setGraphSize] = useState(0);
+	const [restSize, setRestSize] = useState(0);
 
 	const start = async (_) => {
 		setStatuts("workingRest");
-		await restFetcher(rest, config);
+		const rest0 = window.performance.now();
+		await restFetcher(rest, config, setRestSize);
+		const rest1 = window.performance.now();
+
 		setStatuts("workingGraph");
-		await graphFetcher(graphQL, config);
+		const graph0 = window.performance.now();
+		await graphFetcher(graphQL, config, setGraphSize);
+		const graph1 = window.performance.now();
+
+		setGraphTime(graph1 - graph0);
+		setRestTime(rest1 - rest0);
 		setStatuts("completed");
 	};
 
