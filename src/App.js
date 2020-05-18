@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "typeface-roboto";
 import {
@@ -20,6 +20,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Header from "./components/Header";
 import GraphQL from "./components/GraphQL";
 import Rest from "./components/Rest";
+import Results from "./components/Results";
 
 import restFetcher from "./lib/restFetcher";
 import graphFetcher from "./lib/graphFetcher";
@@ -45,6 +46,7 @@ function App() {
 	const [restTime, setRestTime] = useState(0);
 	const [graphSize, setGraphSize] = useState(0);
 	const [restSize, setRestSize] = useState(0);
+	const [results, setResults] = useState([]);
 
 	const start = async (_) => {
 		setStatuts("workingRest");
@@ -61,6 +63,36 @@ function App() {
 		setRestTime(rest1 - rest0);
 		setStatuts("completed");
 	};
+
+	const resetResults = (_) => {
+		setGraphSize(0);
+		setGraphTime(0);
+		setRestSize(0);
+		setRestTime(0);
+	};
+
+	useEffect(
+		(_) => {
+			if (
+				graphTime !== 0 &&
+				graphSize !== 0 &&
+				restTime !== 0 &&
+				restSize !== 0
+			) {
+				const resultsCopy = [...results];
+				resultsCopy.push({
+					graphTime: graphTime,
+					graphSize: graphSize,
+					restTime: restTime,
+					restSize: restSize,
+					time: new Date(),
+				});
+				setResults(resultsCopy);
+				resetResults();
+			}
+		},
+		[graphSize, graphTime, restSize, restTime, results]
+	);
 
 	return (
 		<Container>
@@ -145,6 +177,7 @@ function App() {
 						)}
 					</div>
 				</Grid>
+				<Results results={results} />
 			</Grid>
 		</Container>
 	);
